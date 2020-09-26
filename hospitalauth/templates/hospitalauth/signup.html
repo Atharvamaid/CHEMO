@@ -1,0 +1,42 @@
+{% extends 'hospitalauth/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-6">
+                <form class="signup" method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Create Account</legend>
+                        <div class="form-group">
+                            <label for="hosname">Hospotal Name : </label>
+                            <input type="text" class="form-control" id="hosname" name="hosname" placeholder="Enter hospital name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email : </label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                        </div>
+                       <div class="form-group">
+                            <label for="pass">Password : </label>
+                            <input type="password" class="form-control" id="pass" name="pass" placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confpass">Confirm Password : </label>
+                            <input type="password" class="form-control" id="confpass" name="confpass" placeholder="Re-enter password">
+                        </div>
+                    </fieldset>
+                    <div class="">
+                        <button class="btn btn-primary" type="submit">Sign Up</button>
+                    </div>
+                    <small >Already had an account ? <a href="">Login here</a></small>
+                </form>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}

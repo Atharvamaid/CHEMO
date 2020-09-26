@@ -1,0 +1,12 @@
+{% extends 'hospitalauth/base.html' %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+        <h1>welcome {{ user.email }}</h1>
+        {% for i in  hospitals %}
+            <p>{{ i.key }} - {{ i.val }}</p>
+        {% endfor %}
+    </div>
+
+    {% endif %}
+{% endblock content %}
