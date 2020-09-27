@@ -40,6 +40,7 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
+                <a class="nav-item nav-link mx-3" href="{% url 'trackcases' %}">Track Cases</a>
                 <a class="nav-item nav-link mx-3" href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a class="btn signbtn text-white mx-3" href="{% url 'signup' %}" style="background-color : #303f9f;">Create Account</a>

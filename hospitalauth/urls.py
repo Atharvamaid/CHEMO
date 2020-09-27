@@ -7,6 +7,7 @@ urlpatterns = [
     path('signup/', views.CreateAccount, name='signup'),
     path('login/', views.log_in, name='login'),
     path('logout/', views.log_out, name='logout'),
-    path('dashboard/', views.dashboard, name='dashboard')
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('covid_data/', views.TrackCases, name='trackcases')
 
 ]

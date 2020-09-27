@@ -1,0 +1,26 @@
+{% extends 'hospitalauth/base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <table class="table border table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>District</th>
+                <th>Confirmed</th>
+                <th>Active</th>
+                 <th>Deceased</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for i,j in cases.items %}
+                <tr>
+                <td>{{ i }}</td>
+                <td>{{ j.confirmed }}</td>
+                <td>{{ j.active }}</td>
+                    <td>{{ j.deceased }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+    </div>
+{% endblock content %}

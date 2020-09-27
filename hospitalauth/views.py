@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-import pyrebase
+import pyrebase, requests
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,logout, login
@@ -32,6 +32,12 @@ def log_in(request):
 
     return render(request, 'hospitalauth/login.html')
 
+def TrackCases(request):
+    cases = requests.get('https://api.covid19india.org/state_district_wise.json')
+    cases=cases.json()
+    cases = cases['Maharashtra']['districtData']
+    return render(request, 'hospitalauth/trackcases.html', {'cases' : cases})
+
 def dashboard(request):
     db = firebase.database()
     hospitals = db.child('Hospitals').child(request.user.id).get().each()
@@ -44,11 +50,14 @@ def CreateAccount(request):
         email = request.POST['email']
         password = request.POST['pass']
         user = User.objects.create_user(username=username[0], email=email, password=password)
-        messages.success(request, f'Account Created for {name}')
-        dats = {'hospitalName' : name}
-        db = firebase.database()
-        db.child('Hospitals').child(user.id).set(dats)
-        return redirect('login')
+        if user:
+            messages.success(request, f'Account Created for {name}')
+            dats = {'hospitalName': name}
+            db = firebase.database()
+            db.child('Hospitals').child(user.id).set(dats)
+            return redirect('login')
+        else :
+            messages.warning(request,'Account not created try again')
 
     else:
         form = Register()
