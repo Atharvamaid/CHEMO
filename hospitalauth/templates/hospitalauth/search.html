@@ -1,0 +1,34 @@
+{% extends 'hospitalauth/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 pt-2 mt-4 mb-2 bg-light border" style="display : flex; flex-direction : column; align-items : center;">
+                    <img class="mt-2" src="{% static 'hospitalauth/account.png' %}" width="100px" height="100px">
+                    <h5 class="my-3"><i class="far fa-hospital fa-lg"></i>  {{ name.val }}</h5>
+                    <h5 class="my-3"><i class="fas fa-map-marker-alt fa-lg"></i>{{ address.val }}</h5>
+                    <h5 class="my-3"><i class="fas fa-phone fa-lg"></i>  0038248</h5>
+
+                    <br>
+                    <button class="btn requestbtn btn-lg mb-2 text-white" style="background-color : #1565c0">Request Supplies</button>
+                    <br>
+                    <button class="btn editbtn btn-lg mb-2" style="border : 2px solid #0d47a1; color : #0d47a1">Donate Supplies</button>
+                    <br>
+
+                </div>
+            <div class="col-md-10">
+                    {% if messages %}
+                        {% for i in messages %}
+                                        <div class="alert alert-{{ i.tags }}">
+                                            {{ i }}
+                                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                <div class="container">
+                    <h1>{{ hospital.val.Hospital_Name }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

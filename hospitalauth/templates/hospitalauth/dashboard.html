@@ -1,12 +1,142 @@
 {% extends 'hospitalauth/base.html' %}
+{% load static %}
 {% block content %}
     {% if user.is_authenticated %}
-        <div class="container">
-        <h1>welcome {{ user.email }}</h1>
-        {% for i in  hospitals %}
-            <p>{{ i.key }} - {{ i.val }}</p>
-        {% endfor %}
-    </div>
+        <div class="container-fluid ">
+            <div class="row">
+                <div class="col-md-2 pt-2 mt-4 mb-2 bg-light border" style="display : flex; flex-direction : column; align-items : center;">
+                    <img class="mt-2" src="{% static 'hospitalauth/account.png' %}" width="100px" height="100px">
+                    <h5 class="my-3"><i class="far fa-hospital fa-lg"></i>  {{ name.val }}</h5>
+                    <h5 class="my-3"><i class="fas fa-map-marker-alt fa-lg"></i>{{ address.val }}</h5>
+                    <h5 class="my-3"><i class="fas fa-phone fa-lg"></i>  0038248</h5>
+
+                    <br>
+                    <button class="btn requestbtn btn-lg mb-2 text-white" style="background-color : #1565c0">Request Supplies</button>
+                    <br>
+                    <button class="btn editbtn btn-lg mb-2" style="border : 2px solid #0d47a1; color : #0d47a1">Donate Supplies</button>
+                    <br>
+
+                </div>
+                <div class="col-md-10">
+                    {% if messages %}
+                        {% for i in messages %}
+                                        <div class="alert alert-{{ i.tags }}">
+                                            {{ i }}
+                                        </div>
+                        {% endfor %}
+                    {% endif %}
+                        <div class="container-fluid mt-4">
+                            <form method="POST" id="form" action="{% url 'update' %}">
+                                {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                      <div class="card-body">
+                                        <h4 class="card-title">Inpatients  <i class="fas fa-user-injured"></i></h4>
+                                        <p class="card-text">Confirmed Positive : <span  class="float-right 1">{{ supplies.val.inpatients.confirmed }}<input type="hidden" id="1" name="inpatientsconfirmed" required></span></p>
+                                        <p class="card-text">Patients Under Investigation : <span  class="float-right 2">{{ supplies.val.inpatients.under_observation }}<input type="hidden" id="2" name="inpatientsunder_observation" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 3">{{ supplies.val.inpatients.total }}<input type="hidden" id="3" name="inpatientstotal" required></span></p>
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                            <div class="card" style="background-color : #f2f2f2;">
+                                          <div class="card-body">
+                                            <h4 class="card-title">Beds  <i class="fas fa-bed"></i></h4>
+                                        <p class="card-text">Available : <span  class="float-right 4">{{ supplies.val.Beds.available }}<input type="hidden" id="4" name="Bedsavailable" required></span></p>
+                                        <p class="card-text">Occupied : <span  class="float-right 5">{{ supplies.val.Beds.occupied }}<input type="hidden" id="5" name="Bedsoccupied" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 6">{{ supplies.val.Beds.total }}<input type="hidden" id="6" name="Bedstotal" required></span></p>
+                                          </div>
+                                        </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                              <div class="card-body">
+                                                <h4 class="card-title">Staff   <i class="fas fa-user-friends"></i></h4>
+                                        <p class="card-text">On Call : <span  class="float-right 7">{{ supplies.val.staff.oncall }}<input type="hidden" id="7" name="staffoncall" required></span></p>
+                                        <p class="card-text">On Shift : <span  class="float-right 8">{{ supplies.val.staff.onshift }}<input type="hidden" id="8" name="staffonshift" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 9">{{ supplies.val.staff.total }}<input type="hidden" id="9" name="stafftotal" required></span></p>
+                                              </div>
+                                            </div>
+                                </div>
+                            </div>
+                            <div style="display : block;">
+                                <h2 class="text-center ppe my-3" style="display : inline-block;">Personal Protection Equipment (PPE)</h2>
+                            <button class="btn mt-3 editvalue float-right"  style="border : 1px solid #0d47a1; color : #0d47a1">Edit Values</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                      <div class="card-body">
+                                        <h4 class="card-title">Ventilators</h4>
+                                        <p class="card-text">Available : <span  class="float-right 10">{{ supplies.val.ventilators.available }}<input type="hidden" id="10" name="ventilatorsavailable" required></span></p>
+                                        <p class="card-text">Occupied : <span  class="float-right 11">{{ supplies.val.ventilators.in_use }}<input type="hidden" id="11" name="ventilatorsin_use" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 12">{{ supplies.val.ventilators.total }}<input type="hidden" id="12" name="ventilatorstotal" required></span></p>
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                            <div class="card" style="background-color : #f2f2f2;">
+                                          <div class="card-body">
+                                            <h4 class="card-title">Surgical Masks</h4>
+                                        <p class="card-text">Available : <span  class="float-right 13">{{ supplies.val.surgical_masks.available }}<input type="hidden" id="13" name="surgical_masksavailable" required></span></p>
+                                              <p class="card-text">In Use : <span  class="float-right 14">{{ supplies.val.surgical_masks.in_use }}<input type="hidden" id="14" name="surgical_masksin_use" required></span></p>
+                                              <p class="card-text">Total : <span  class="float-right 15">{{ supplies.val.surgical_masks.total }}<input type="hidden" id="15" name="surgical_maskstotal" required></span></p>
+                                          </div>
+                                        </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                              <div class="card-body">
+                                                <h4 class="card-title">Gloves</h4>
+                                        <p class="card-text">Large Size : <span  class="float-right 16">{{ supplies.val.gloves.large }}<input type="hidden" id="16" name="gloveslarge" required></span></p>
+                                        <p class="card-text">Small Size : <span  class="float-right 17">{{ supplies.val.gloves.small }}<input type="hidden" id="17" name="glovessmall" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 18">{{ supplies.val.gloves.total }}<input type="hidden" id="18" name="glovestotal" required></span></p>
+                                              </div>
+                                            </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                      <div class="card-body">
+                                        <h4 class="card-title">Face Shields</h4>
+                                        <p class="card-text">Available : <span  class="float-right 19">{{ supplies.val.face_shield.available }}<input type="hidden" id="19" name="face_shieldavailable" required></span></p>
+                                          <p class="card-text">In Use : <span  class="float-right 20">{{ supplies.val.face_shield.in_use }}<input type="hidden" id="20" name="face_shieldin_use" required></span></p>
+                                          <p class="card-text">Total : <span  class="float-right 21">{{ supplies.val.face_shield.total }}<input type="hidden" id="21" name="face_shieldtotal" required></span></p>
+
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                            <div class="card" style="background-color : #f2f2f2;">
+                                          <div class="card-body">
+                                            <h4 class="card-title">Isolation Gowns</h4>
+                                        <p class="card-text">Large Size : <span  class="float-right 22">{{ supplies.val.isolation_gowns.large }}<input type="hidden" id="22" name="isolation_gownslarge" required></span></p>
+                                        <p class="card-text">Small Size : <span  class="float-right 23">{{ supplies.val.isolation_gowns.small }}<input type="hidden" id="23" name="isolation_gownssmall" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 24">{{ supplies.val.isolation_gowns.total }}<input type="hidden" id="24" name="isolation_gownstotal" required></span></p>
+                                          </div>
+                                        </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card" style="background-color : #f2f2f2;">
+                                              <div class="card-body">
+                                                <h4 class="card-title">Respirators</h4>
+                                        <p class="card-text">N95 : <span  class="float-right 25">{{ supplies.val.respirators.N95 }}<input type="hidden" id="25" name="respiratorsN95" required></span></p>
+                                        <p class="card-text">PAPR : <span  class="float-right 26">{{ supplies.val.respirators.PAPR }}<input type="hidden" id="26" name="respiratorsPAPR" required></span></p>
+                                         <p class="card-text">Total : <span  class="float-right 27">{{ supplies.val.respirators.total }}<input type="hidden" id="27" name="respiratorstotal" required></span></p>
+
+                                              </div>
+                                            </div>
+                                </div>
+
+                            </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+
+        </div>
 
     {% endif %}
 {% endblock content %}

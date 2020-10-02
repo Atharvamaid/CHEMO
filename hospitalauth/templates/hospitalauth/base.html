@@ -1,17 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="shortcut icon" type="image/png" href="{% static 'hospitalauth/covid1.ico' %}"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Covid Health and Environment Monitoring System</title>
     <style>
         .navbar-nav a{
 
         }
+
         .signbtn:hover{
-        background-color : #1a237e !important;
+        background-color : #0d47a1 !important;
         }
         @media screen and (max-width : 992px){
                 .content{
@@ -24,33 +27,87 @@
                     font-size : 50px;
                 }
         }
+        @media screen and (max-width : 502px){
+                .content{
+                height : 100% !important;
+                width : 100%;
+                overflow-x : hidden;
 
+                }
+                .content h1{
+                    font-size : 30px;
+                }
+                .content h2{
+                    font-size : 25px;
+                }
+
+
+        }
+        @media screen and (max-width : 802px){
+                .ppe{
+                font-size : 20px;
+                }
+
+
+        }
+
+        .requestbtn{
+        transition : 0.1s ease;
+        }
+        .editbtn{
+        transition : 0.1s ease;
+        }
+        .requestbtn:hover{
+            background-color : #0d47a1 !important;
+        }
+        .editbtn:hover{
+            background-color : #1565c0;
+            color : #fff !important;
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-md sticky-top navbar-light" style="background-color : #f2f2f2;">
-    <a class="navbar-brand mr-3 font-weight-bold" href="{% url 'Home' %}" style="font-size : 25px; color : #1a237e; letter-spacing : 2px;">CHEMO</a>
+<nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color : #f2f2f2;">
+
+        <a class="navbar-brand mr-3 font-weight-bold" href="{% url 'Home' %}" style="font-size : 25px; color : #1565c0; letter-spacing : 2px;">CHEMO</a>
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navres">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="navbar-collapse collapse" id="navres">
+    <div class="navbar-collapse collapse " id="navres">
         <ul class="navbar-nav">
             <a class="nav-item nav-link mx-3" href="{% url 'Home' %}">Home</a>
-            <a class="nav-item nav-link mx-3" href="">Hospitals</a>
+            {% if user.is_authenticated %}
+                <a class="nav-item nav-link mx-3" href="{% url 'dashboard' %}">Dashboard</a>
+            {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
+                <form class="form-inline" method="POST" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <i class="fa fa-search fa-lg" style="color : #1565c0;"></i><input class="form-control ml-2 mr-sm-2" type="text" name="q" placeholder="Search Hospital">
+                    <button class="btn text-white mx-3" style="background-color : #1565c0;" type="submit">Search</button>
+                </form>
                 <a class="nav-item nav-link mx-3" href="{% url 'trackcases' %}">Track Cases</a>
-                <a class="nav-item nav-link mx-3" href="{% url 'logout' %}">Logout</a>
+                <li class="nav-item dropdown border rounded-circle dropleft">
+                    <a class="nav-link" id="navdrop" style="cursor : pointer;" data-toggle="dropdown"><i class="fas fa-lg fa-user-alt"></i></a>
+                    <div class="dropdown-menu">
+
+                        <a class="dropdown-item">Edit Info</a>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Logout </a>
+                    </div>
+                </li>
             {% else %}
-                <a class="btn signbtn text-white mx-3" href="{% url 'signup' %}" style="background-color : #303f9f;">Create Account</a>
-                <a class="nav-item nav-link mx-3" href="{% url 'login' %}">Login</a>
+                <a class="btn signbtn text-white mx-3" href="{% url 'signup' %}" style="background-color : #1565c0;">Create Account</a>
+                <a class="btn  mx-3" style="border : 1px solid #1565c0; border-radius : 5px; color : #1565c0;" href="{% url 'login' %}">Login</a>
             {% endif %}
         </ul>
     </div>
 </nav>
-{% block content %}
-{% endblock content %}
+
+    {% block content %}
+    {% endblock content %}
+
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -59,5 +116,58 @@
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function(){
+      $(".editvalue").click(function(e){
+        e.preventDefault();
+        $(this).removeClass('editvalue');
+        $(this).toggleClass('update');
+        if($(this).text()==="update"){
+        $(this).text('Edit Values');
+        $(this).css({"background-color" : "transparent", "border" : "1px solid #1565c0", "color" : "#1565c0"})
+        for(var i = 1; i<=27;i++){
+            var n = i.toString();
+            var id = '#' + n;
+            var cls = '.' + n;
+            var x = $(id).val();
+            $(id).attr("type", "hidden");
+            $(cls).append(x);
+            }
+
+            $.ajax({
+            url : $("#form").attr("action"),
+            type : "POST",
+            data : $("#form").serialize(),
+
+            success : function(response){
+
+            console.log(response);
+
+            }
+            });
+        }
+        else{
+            for(var i = 1; i<=27;i++){
+            var n = i.toString();
+            var id = '#' + n;
+            var cls = '.'+n;
+            var txt = $(cls).text();
+
+            $(id).attr({"type" : "number"});
+            $(id).val(txt);
+            $(id).css("width" ,"50px");
+            $(cls).html($(id));
+            console.log('ji');
+            }
+            $(this).text('update');
+            $(this).css({"background-color" : "#1565c0", "color" : "white"});
+        }
+
+        console.log("loop ended");
+
+      });
+
+});
+</script>
 </body>
 </html>
